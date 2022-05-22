@@ -379,6 +379,7 @@ function createDockerCompose() {
         image: `${allData.name}-cocasus-web`,
         container_name: `${allData.name}-cocasus-web`,
         ports: ["8080:8080"],
+        volumes: ["./cocasus-app/log:/app/web/log"],
         networks: ["back-network"],
       };
     }
@@ -422,6 +423,7 @@ function createDockerCompose() {
         image: `${allData.name}-cocasus-api`,
         container_name: `${allData.name}-cocasus-api`,
         ports: ["5000:5000"],
+        volumes: ["./cocasus-api/log:/app/api/log"],
         networks: ["back-network"],
       };
     }
