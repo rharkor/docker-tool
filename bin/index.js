@@ -236,8 +236,13 @@ async function createProjectsFolders() {
       const packageName = "@rharkor/flask-api-boilerplate  --no-interaction";
       await installDependency(packageName);
     } else if (allData.api === "cocasus") {
-      const packageName = "@cocasus --type api --name cocasus-app";
+      const packageName =
+        "cocasus init --type api --name cocasus-app --root ./cocasus-api --deps false";
       await installDependency(packageName);
+      fs.copyFileSync(
+        `${ownPath}/cocasus-api/.env.example`,
+        `${ownPath}/cocasus-api/.env`
+      );
     }
   }
 
@@ -280,8 +285,13 @@ async function createProjectsFolders() {
         `${ownPath}/my-vue-app/.env`
       );
     } else if (allData.frontBack === "cocasus") {
-      const packageName = "@cocasus --type web --name cocasus-web";
+      const packageName =
+        "cocasus init --type web --name cocasus-web --root ./cocasus-app --deps false";
       await installDependency(packageName);
+      fs.copyFileSync(
+        `${ownPath}/cocasus-app/.env.example`,
+        `${ownPath}/cocasus-app/.env`
+      );
     }
   }
 
@@ -363,13 +373,12 @@ function createDockerCompose() {
     } else if (allData.frontBack === "cocasus") {
       content.services.web = {
         build: {
-          context: "cocasus-web",
+          context: "cocasus-app",
           dockerfile: "Dockerfile",
         },
         image: `${allData.name}-cocasus-web`,
         container_name: `${allData.name}-cocasus-web`,
         ports: ["8080:8080"],
-        volumes: ["./cocasus-web:/app/web"],
         networks: ["back-network"],
       };
     }
@@ -412,7 +421,6 @@ function createDockerCompose() {
         },
         image: `${allData.name}-cocasus-api`,
         container_name: `${allData.name}-cocasus-api`,
-        volumes: ["./cocasus-api:/app/api"],
         ports: ["5000:5000"],
         networks: ["back-network"],
       };
